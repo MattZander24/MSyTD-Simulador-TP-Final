@@ -1,0 +1,278 @@
+Desarrollá una aplicación de escritorio completa en Python para resolver mediante simulación el problema "Juego EBRIO" de la materia Modelos, Simulación y Teoría de la Decisión.
+
+# Objetivo
+
+Implementar un simulador gráfico que permita analizar una caminata aleatoria bidimensional (Random Walk) de un borracho que parte desde el origen (0,0) y en cada esquina decide aleatoriamente moverse una calle hacia:
+
+* Norte
+* Sur
+* Este
+* Oeste
+
+Todas las direcciones deben tener probabilidad uniforme:
+
+P = 0.25
+
+El simulador debe permitir realizar simulaciones individuales y simulaciones Monte Carlo masivas para estimar probabilidades.
+
+# Tecnologías obligatorias
+
+* Python 3.12+
+* CustomTkinter para la interfaz gráfica
+* Matplotlib para gráficos
+* NumPy cuando sea conveniente
+* Arquitectura modular
+
+# Estructura esperada del proyecto
+
+Generar múltiples archivos.
+
+Ejemplo:
+
+MSyTD-Simulador-TP-Final/
+│
+├── main.py
+├── simulation.py
+├── statistics.py
+├── visualization.py
+├── ui.py
+├── requirements.txt
+│
+└── assets/
+
+No implementar todo en un único archivo.
+
+# Modelo del problema
+
+El borracho comienza siempre en:
+
+(0,0)
+
+Cada paso equivale a una calle.
+
+Las coordenadas deben manejarse como:
+
+(x,y)
+
+Movimientos:
+
+Norte  -> (x, y+1)
+Sur    -> (x, y-1)
+Este   -> (x+1, y)
+Oeste  -> (x-1, y)
+
+# Distancia utilizada
+
+Usar exclusivamente distancia Manhattan.
+
+Definición:
+
+distancia = |x| + |y|
+
+# Definición de encontrar las llaves
+
+Las llaves estarán ubicadas en una coordenada configurable.
+
+El borracho encuentra las llaves si en cualquier momento del recorrido pasa por dicha coordenada.
+
+No es necesario terminar sobre las llaves.
+
+Ejemplo:
+
+Si las llaves están en (2,1) y el recorrido visita (2,1) en el paso 4, entonces:
+
+encontro_llaves = True
+
+aunque termine en otra posición.
+
+# Funcionalidades obligatorias
+
+## 1. Simulación individual animada
+
+Permitir ejecutar una única caminata.
+
+Mostrar:
+
+* Grilla
+* Punto de inicio
+* Posición de las llaves
+* Trayectoria recorrida
+* Posición actual
+
+La animación debe ejecutarse paso a paso.
+
+Agregar control de velocidad:
+
+* Lenta
+* Media
+* Rápida
+
+Mostrar:
+
+* Paso actual
+* Coordenada actual
+* Distancia al origen
+
+## 2. Simulación Monte Carlo
+
+Permitir ejecutar:
+
+* 100 simulaciones
+* 1000 simulaciones
+* 10000 simulaciones
+* valor personalizado
+
+Calcular:
+
+* Probabilidad de terminar a distancia Manhattan 2
+* Probabilidad de encontrar las llaves
+* Distancia promedio al origen
+* Posición final más frecuente
+* Cantidad de veces que vuelve al origen
+
+Mostrar resultados numéricos.
+
+## 3. Consulta de probabilidad para coordenada específica
+
+El usuario debe poder ingresar:
+
+X objetivo
+Y objetivo
+
+Ejemplo:
+
+(2,0)
+
+El sistema debe calcular mediante Monte Carlo:
+
+Probabilidad de terminar exactamente en esa coordenada.
+
+## 4. Configuración de parámetros
+
+Permitir modificar:
+
+* Cantidad de pasos
+* Posición X de las llaves
+* Posición Y de las llaves
+* Cantidad de simulaciones
+* Velocidad de animación
+
+Valores por defecto:
+
+Pasos = 10
+Llaves = (2,1)
+Simulaciones = 10000
+
+## 5. Gráficos
+
+Implementar los siguientes gráficos utilizando Matplotlib embebido en la interfaz.
+
+### Distribución de posiciones finales
+
+Mostrar las posiciones finales más frecuentes.
+
+### Histograma de distancias finales
+
+Mostrar cuántas simulaciones terminan a cada distancia Manhattan.
+
+### Convergencia Monte Carlo
+
+Graficar cómo converge la probabilidad estimada de terminar a distancia 2 a medida que aumenta el número de simulaciones.
+
+Ejemplo:
+
+100
+500
+1000
+5000
+10000
+
+### Heatmap de posiciones finales
+
+Generar un mapa de calor de las coordenadas finales.
+
+# Interfaz gráfica
+
+Diseñar una ventana moderna utilizando CustomTkinter.
+
+Distribuirla en tres zonas.
+
+## Panel izquierdo
+
+Configuración:
+
+* pasos
+* simulaciones
+* llaves
+* coordenada objetivo
+
+Botones:
+
+* Ejecutar simulación individual
+* Ejecutar Monte Carlo
+* Limpiar
+
+## Panel central
+
+Visualización de la grilla.
+
+Mostrar:
+
+* origen
+* llaves
+* trayectoria
+* posición actual
+
+## Panel derecho
+
+Resultados.
+
+Mostrar:
+
+* Probabilidad distancia 2
+* Probabilidad de encontrar llaves
+* Distancia promedio
+* Posición más frecuente
+* Probabilidad de coordenada objetivo
+
+# Requisitos de calidad
+
+* Código completamente comentado
+* Type hints cuando sea posible
+* Separación clara entre lógica y UI
+* Evitar variables globales
+* Utilizar clases cuando tenga sentido
+* Manejo de errores en entradas numéricas
+* No bloquear la interfaz durante simulaciones largas
+* Utilizar hilos (threading) o mecanismos equivalentes para mantener la UI responsiva
+
+# Funcionalidades extra
+
+Agregar:
+
+* Barra de progreso para Monte Carlo
+* Exportar resultados a CSV
+* Guardar gráfico como imagen PNG
+* Semilla aleatoria opcional para reproducibilidad
+* Botón "Generar corrida aleatoria"
+
+# Resultado esperado
+
+Generar todos los archivos completos del proyecto.
+
+Incluir:
+
+* Código completo
+* Imports necesarios
+* requirements.txt
+* Instrucciones de ejecución
+
+El proyecto debe poder ejecutarse directamente después de instalar las dependencias con:
+
+pip install -r requirements.txt
+
+y luego:
+
+python main.py
+
+El resultado debe verse como una herramienta académica profesional apta para presentar y defender en una materia universitaria de simulación.
