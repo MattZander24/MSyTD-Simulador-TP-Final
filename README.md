@@ -99,9 +99,9 @@ python main.py
 
 1. **Configurar parámetros** en el panel izquierdo:
    - Cantidad de pasos (por defecto: 10)
-   - Posición de las llaves (por defecto: 2, 1)
+   - Posición de las llaves (por defecto: 2, 2)
    - Cantidad de simulaciones (por defecto: 10000)
-   - Coordenada objetivo para consulta de probabilidad
+   - Coordenada objetivo para consulta de probabilidad (por defecto: 0, 0)
    - Semilla aleatoria (opcional, para reproducibilidad)
    - Velocidad de animación
 
@@ -122,9 +122,10 @@ python main.py
 ## Parámetros por Defecto
 
 - **Pasos**: 10
-- **Llaves**: (2, 1)
+- **Llaves**: (2, 2)
 - **Simulaciones Monte Carlo**: 10000
 - **Velocidad de animación**: Media
+- **Coordenada objetivo**: (0, 0)
 
 ## Distancia Manhattan
 
@@ -139,6 +140,28 @@ distancia = |x| + |y|
 Las llaves están ubicadas en una coordenada configurable. El borracho encuentra las llaves si en cualquier momento del recorrido pasa por dicha coordenada. No es necesario terminar sobre las llaves.
 
 **Ejemplo**: Si las llaves están en (2,1) y el recorrido visita (2,1) en el paso 4, entonces `encontro_llaves = True` aunque termine en otra posición.
+
+## Semilla Aleatoria
+
+La semilla aleatoria es un parámetro opcional que permite controlar la generación de números aleatorios para garantizar la reproducibilidad de las simulaciones.
+
+### Tipo de Dato
+- **Tipo**: `int` (entero no negativo)
+- **Opcional**: Si no se especifica, se utiliza `None` y los generadores aleatorios se inicializan con un valor impredecible
+- **Restricción**: La semilla debe ser un número entero mayor o igual a 0
+
+### Funcionamiento
+Cuando se proporciona una semilla:
+1. Se inicializa el generador aleatorio de Python (`random.seed(seed)`)
+2. Se inicializa el generador aleatorio de NumPy (`np.random.seed(seed)`)
+3. Todas las simulaciones ejecutadas con esa semilla producirán exactamente la misma secuencia de movimientos aleatorios
+
+### Uso Práctico
+- **Reproducibilidad**: Usar la misma semilla permite obtener resultados idénticos en diferentes ejecuciones
+- **Depuración**: Facilita la identificación de errores al poder replicar exactamente una simulación problemática
+- **Comparación**: Permite comparar diferentes configuraciones con la misma secuencia aleatoria
+
+**Ejemplo**: Si se usa `semilla = 42`, todas las simulaciones ejecutadas con ese valor seguirán la misma trayectoria, independientemente de cuándo se ejecuten.
 
 ## Arquitectura del Código
 

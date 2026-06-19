@@ -21,7 +21,10 @@ class SimulationVisualizer:
     
     def __init__(self):
         """Inicializa el visualizador con configuración de estilo."""
-        plt.style.use('seaborn-v0_8-darkgrid')
+        try:
+            plt.style.use('seaborn-v0_8-darkgrid')
+        except:
+            plt.style.use('seaborn-darkgrid')
         self.figures = []
     
     def plot_single_simulation(
@@ -125,7 +128,7 @@ class SimulationVisualizer:
         ax.set_xlabel('Posición Final')
         ax.set_ylabel('Frecuencia')
         ax.set_title('Distribución de Posiciones Finales (Top 15)')
-        ax.tight_layout()
+        fig.tight_layout()
         
         return fig
     

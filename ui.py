@@ -42,12 +42,12 @@ class DrunkWalkApp(ctk.CTk):
         ctk.set_default_color_theme("blue")
         
         # Variables de configuración (crear antes de los widgets)
-        self.steps_var = ctk.IntVar(value=10)
-        self.keys_x_var = ctk.IntVar(value=2)
-        self.keys_y_var = ctk.IntVar(value=1)
-        self.num_simulations_var = ctk.IntVar(value=10000)
-        self.target_x_var = ctk.IntVar(value=2)
-        self.target_y_var = ctk.IntVar(value=0)
+        self.steps_var = ctk.StringVar(value="10")
+        self.keys_x_var = ctk.StringVar(value="2")
+        self.keys_y_var = ctk.StringVar(value="2")
+        self.num_simulations_var = ctk.StringVar(value="10000")
+        self.target_x_var = ctk.StringVar(value="0")
+        self.target_y_var = ctk.StringVar(value="0")
         self.seed_var = ctk.StringVar(value="")
         self.speed_var = ctk.StringVar(value="media")
         
@@ -148,24 +148,6 @@ class DrunkWalkApp(ctk.CTk):
         )
         speed_menu.grid(row=7, column=1, sticky="ew", padx=5, pady=5)
         
-        # Botones de simulación predefinidos
-        sim_buttons_frame = ctk.CTkFrame(self.left_panel)
-        sim_buttons_frame.pack(fill="x", padx=10, pady=10)
-        
-        ctk.CTkLabel(
-            sim_buttons_frame, 
-            text="Simulaciones Monte Carlo", 
-            font=ctk.CTkFont(size=14, weight="bold")
-        ).pack(pady=(10, 5))
-        
-        for n in [100, 1000, 10000]:
-            btn = ctk.CTkButton(
-                sim_buttons_frame,
-                text=f"{n} Simulaciones",
-                command=lambda x=n: self.run_monte_carlo(x)
-            )
-            btn.pack(fill="x", padx=5, pady=2)
-        
         # Botones principales
         buttons_frame = ctk.CTkFrame(self.left_panel)
         buttons_frame.pack(fill="x", padx=10, pady=10)
@@ -215,14 +197,6 @@ class DrunkWalkApp(ctk.CTk):
             state="disabled"
         )
         self.export_btn.pack(fill="x", padx=5, pady=2)
-        
-        self.save_graph_btn = ctk.CTkButton(
-            utility_frame,
-            text="Guardar Gráfico PNG",
-            command=self.save_graph,
-            state="disabled"
-        )
-        self.save_graph_btn.pack(fill="x", padx=5, pady=2)
         
         self.clear_btn = ctk.CTkButton(
             utility_frame,
@@ -391,16 +365,31 @@ class DrunkWalkApp(ctk.CTk):
             Tupla con (steps, keys_position, seed)
         """
         try:
-            steps = self.steps_var.get()
-            keys_x = self.keys_x_var.get()
-            keys_y = self.keys_y_var.get()
+            steps_str = self.steps_var.get()
+            keys_x_str = self.keys_x_var.get()
+            keys_y_str = self.keys_y_var.get()
+            num_sim_str = self.num_simulations_var.get()
             seed_str = self.seed_var.get()
             
+            # Validar que los campos no estén vacíos
+            if not steps_str or not keys_x_str or not keys_y_str or not num_sim_str:
+                messagebox.showerror("Error", "Todos los campos numéricos deben tener un valor")
+                raise ValueError("Empty field")
+            
+            steps = int(steps_str)
+            keys_x = int(keys_x_str)
+            keys_y = int(keys_y_str)
             seed = int(seed_str) if seed_str else None
             
+            # Validar que la semilla sea no negativa
+            if seed is not None and seed < 0:
+                messagebox.showerror("Error", "La semilla debe ser un número entero no negativo")
+                raise ValueError("Seed must be non-negative")
+            
             return steps, (keys_x, keys_y), seed
-        except ValueError:
-            messagebox.showerror("Error", "Por favor ingrese valores numéricos válidos")
+        except ValueError as e:
+            if "Empty field" not in str(e):
+                messagebox.showerror("Error", "Por favor ingrese valores numéricos válidos")
             raise
     
     def run_single_simulation(self):
@@ -417,9 +406,6 @@ class DrunkWalkApp(ctk.CTk):
             
             # Animar la simulación
             self.animate_simulation()
-            
-            # Habilitar botones
-            self.save_graph_btn.configure(state="normal")
             
         except ValueError:
             pass
@@ -444,8 +430,10 @@ class DrunkWalkApp(ctk.CTk):
         x_coords = [pos[0] for pos in self.current_result.path]
         y_coords = [pos[1] for pos in self.current_result.path]
         
-        all_x = x_coords + [self.keys_x_var.get()]
-        all_y = y_coords + [self.keys_y_var.get()]
+        keys_x = int(self.keys_x_var.get())
+        keys_y = int(self.keys_y_var.get())
+        all_x = x_coords + [keys_x]
+        all_y = y_coords + [keys_y]
         max_range = max(max(abs(x) for x in all_x), max(abs(y) for y in all_y)) + 2
         
         ax.grid(True, linestyle='--', alpha=0.7)
@@ -458,7 +446,7 @@ class DrunkWalkApp(ctk.CTk):
         
         # Elementos estáticos
         ax.plot(0, 0, 'go', markersize=12, label='Origen', zorder=5)
-        ax.plot(self.keys_x_var.get(), self.keys_y_var.get(), 'y*', 
+        ax.plot(keys_x, keys_y, 'y*', 
                markersize=15, label='Llaves', zorder=5)
         
         # Elementos dinámicos
@@ -511,7 +499,11 @@ class DrunkWalkApp(ctk.CTk):
             steps, keys_position, seed = self.get_simulation_params()
             
             if num_simulations is None:
-                num_simulations = self.num_simulations_var.get()
+                num_sim_str = self.num_simulations_var.get()
+                if not num_sim_str:
+                    messagebox.showerror("Error", "La cantidad de simulaciones debe tener un valor")
+                    return
+                num_simulations = int(num_sim_str)
             
             # Deshabilitar botones durante simulación
             self.disable_buttons()
@@ -589,8 +581,15 @@ class DrunkWalkApp(ctk.CTk):
             return
         
         try:
-            target_x = self.target_x_var.get()
-            target_y = self.target_y_var.get()
+            target_x_str = self.target_x_var.get()
+            target_y_str = self.target_y_var.get()
+            
+            if not target_x_str or not target_y_str:
+                messagebox.showerror("Error", "Las coordenadas objetivo deben tener un valor")
+                return
+            
+            target_x = int(target_x_str)
+            target_y = int(target_y_str)
             target_position = (target_x, target_y)
             
             prob = self.current_stats.calculate_position_probability(target_position)
@@ -613,9 +612,6 @@ class DrunkWalkApp(ctk.CTk):
             # Mostrar resultado estático
             self.show_static_result()
             
-            # Habilitar botón de guardar
-            self.save_graph_btn.configure(state="normal")
-            
         except ValueError:
             pass
     
@@ -631,7 +627,7 @@ class DrunkWalkApp(ctk.CTk):
         # Crear gráfico
         fig = self.visualizer.plot_single_simulation(
             self.current_result,
-            (self.keys_x_var.get(), self.keys_y_var.get())
+            (int(self.keys_x_var.get()), int(self.keys_y_var.get()))
         )
         
         # Embeber en Tkinter
@@ -736,24 +732,6 @@ class DrunkWalkApp(ctk.CTk):
             except Exception as e:
                 messagebox.showerror("Error", f"Error al exportar: {str(e)}")
     
-    def save_graph(self):
-        """Guarda el gráfico actual como PNG."""
-        filename = filedialog.asksaveasfilename(
-            defaultextension=".png",
-            filetypes=[("PNG files", "*.png"), ("All files", "*.*")]
-        )
-        
-        if filename:
-            try:
-                # Obtener figura actual del canvas
-                for widget in self.plot_frame.winfo_children():
-                    if isinstance(widget, FigureCanvasTkAgg):
-                        widget.figure.savefig(filename, dpi=300, bbox_inches='tight')
-                        messagebox.showinfo("Éxito", f"Gráfico guardado en {filename}")
-                        break
-            except Exception as e:
-                messagebox.showerror("Error", f"Error al guardar gráfico: {str(e)}")
-    
     def clear_all(self):
         """Limpia todos los resultados y gráficos."""
         # Detener animación si está corriendo
@@ -786,7 +764,6 @@ class DrunkWalkApp(ctk.CTk):
         
         # Deshabilitar botones
         self.export_btn.configure(state="disabled")
-        self.save_graph_btn.configure(state="disabled")
         self.dist_graph_btn.configure(state="disabled")
         self.hist_graph_btn.configure(state="disabled")
         self.conv_graph_btn.configure(state="disabled")
@@ -807,3 +784,12 @@ class DrunkWalkApp(ctk.CTk):
         self.calc_prob_btn.configure(state="normal")
         self.random_run_btn.configure(state="normal")
         self.clear_btn.configure(state="normal")
+    
+    def on_closing(self):
+        """Maneja el cierre de la aplicación limpiando recursos."""
+        # Detener animación si está corriendo
+        self.animation_running = False
+        
+        # Forzar cierre sin esperar callbacks pendientes
+        self.quit()
+        self.destroy()

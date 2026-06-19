@@ -30,6 +30,9 @@ def main():
         print("\nAplicación interrumpida por el usuario.")
         sys.exit(0)
     except Exception as e:
+        # Ignorar errores de Tkinter durante cierre (callbacks pendientes)
+        if "invalid command name" in str(e) or "update" in str(e) or "check_dpi_scaling" in str(e):
+            sys.exit(0)
         print(f"Error al iniciar la aplicación: {e}")
         sys.exit(1)
 

@@ -104,10 +104,12 @@ class RandomWalkSimulation:
         returns_to_origin = 0
         
         for step in range(1, steps + 1):
-            # Obtener movimiento aleatorio
+            # Paso 2: A partir de un generador de números aleatorios se obtienen
+            # observaciones o datos (movimiento aleatorio)
             dx, dy = self.get_random_move()
             
-            # Actualizar posición
+            # Paso 3: Esas observaciones se transforman en entradas aptas para el modelo
+            # (transformar el movimiento aleatorio en coordenadas)
             x += dx
             y += dy
             
@@ -150,8 +152,14 @@ class RandomWalkSimulation:
         Returns:
             Lista de SimulationResult con los resultados de todas las simulaciones
         """
+        # Paso 1: Construir el modelo
+        # El modelo se construye en la inicialización de la clase RandomWalkSimulation
+        # con las reglas de movimiento y la estructura de la caminata aleatoria
+        
         results = []
         
+        # Paso 4: Operar el modelo de manera tal que transforme las entradas en salidas,
+        # iterando las veces necesarias
         for i in range(num_simulations):
             result = self.simulate_single(steps, keys_position)
             results.append(result)
@@ -160,6 +168,10 @@ class RandomWalkSimulation:
             if progress_callback:
                 progress_callback(i + 1, num_simulations)
         
+        # Paso 5: Realizar la "Contabilidad" de las salidas y utilizar estadísticas
+        # para describir el comportamiento del sistema y tomar decisiones
+        # La contabilidad se realiza en la clase MonteCarloStatistics que procesa
+        # los resultados y calcula estadísticas descriptivas
         return results
     
     def calculate_position_probability(
