@@ -245,16 +245,16 @@ class DrunkWalkApp(ctk.CTk):
         self.info_frame = ctk.CTkFrame(self.center_panel)
         self.info_frame.pack(fill="x", padx=10, pady=10)
         
-        self.step_label = ctk.CTkLabel(self.info_frame, text="Paso: -")
+        self.step_label = ctk.CTkLabel(self.info_frame, text="N° Paso Actual: -")
         self.step_label.pack(anchor="w", padx=5)
         
-        self.position_label = ctk.CTkLabel(self.info_frame, text="Posición: -")
+        self.position_label = ctk.CTkLabel(self.info_frame, text="Posición Actual: -")
         self.position_label.pack(anchor="w", padx=5)
         
-        self.distance_label = ctk.CTkLabel(self.info_frame, text="Distancia: -")
+        self.distance_label = ctk.CTkLabel(self.info_frame, text="Distancia al Origen Actual: -")
         self.distance_label.pack(anchor="w", padx=5)
         
-        self.keys_label = ctk.CTkLabel(self.info_frame, text="Llaves: -")
+        self.keys_label = ctk.CTkLabel(self.info_frame, text="Llaves Encontradas: -")
         self.keys_label.pack(anchor="w", padx=5)
     
     def create_right_panel(self):
@@ -277,7 +277,7 @@ class DrunkWalkApp(ctk.CTk):
         # Labels de resultados
         self.prob_dist_2_label = ctk.CTkLabel(
             self.results_frame, 
-            text="P(Distancia=2): -"
+            text="P(D=2): -"
         )
         self.prob_dist_2_label.pack(anchor="w", padx=5, pady=2)
         
@@ -289,7 +289,7 @@ class DrunkWalkApp(ctk.CTk):
         
         self.avg_dist_label = ctk.CTkLabel(
             self.results_frame, 
-            text="Distancia Promedio: -"
+            text="Distancia Promedio al Origen: -"
         )
         self.avg_dist_label.pack(anchor="w", padx=5, pady=2)
         
@@ -307,7 +307,7 @@ class DrunkWalkApp(ctk.CTk):
         
         self.target_prob_label = ctk.CTkLabel(
             self.results_frame, 
-            text="P(Coordenada Objetivo): -"
+            text="P(Terminar en Coordenada Objetivo): -"
         )
         self.target_prob_label.pack(anchor="w", padx=5, pady=2)
         
@@ -547,13 +547,13 @@ class DrunkWalkApp(ctk.CTk):
         
         # Actualizar labels
         self.prob_dist_2_label.configure(
-            text=f"P(Distancia=2): {summary['prob_distance_2']:.4f}"
+            text=f"P(D=2): {summary['prob_distance_2']:.4f}"
         )
         self.prob_keys_label.configure(
             text=f"P(Encontrar Llaves): {summary['prob_find_keys']:.4f}"
         )
         self.avg_dist_label.configure(
-            text=f"Distancia Promedio: {summary['avg_distance']:.2f}"
+            text=f"Distancia Promedio al Origen: {summary['avg_distance']:.2f}"
         )
         self.freq_pos_label.configure(
             text=f"Posición Más Frecuente: {summary['most_frequent_position']}"
@@ -595,7 +595,7 @@ class DrunkWalkApp(ctk.CTk):
             prob = self.current_stats.calculate_position_probability(target_position)
             
             self.target_prob_label.configure(
-                text=f"P({target_position}): {prob:.6f}"
+                text=f"P(Terminar en {target_position}): {prob:.6f}"
             )
             
         except ValueError:
@@ -751,12 +751,12 @@ class DrunkWalkApp(ctk.CTk):
         self.distance_label.configure(text="Distancia: -")
         self.keys_label.configure(text="Llaves: -")
         
-        self.prob_dist_2_label.configure(text="P(Distancia=2): -")
+        self.prob_dist_2_label.configure(text="P(D=2): -")
         self.prob_keys_label.configure(text="P(Encontrar Llaves): -")
-        self.avg_dist_label.configure(text="Distancia Promedio: -")
+        self.avg_dist_label.configure(text="Distancia Promedio al Origen: -")
         self.freq_pos_label.configure(text="Posición Más Frecuente: -")
         self.returns_label.configure(text="Retornos al Origen: -")
-        self.target_prob_label.configure(text="P(Coordenada Objetivo): -")
+        self.target_prob_label.configure(text="P(Terminar en Coordenada Objetivo): -")
         
         # Resetear barra de progreso
         self.progress_bar.set(0)
