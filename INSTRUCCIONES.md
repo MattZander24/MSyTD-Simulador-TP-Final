@@ -17,3 +17,9 @@
 ```bash y powershell
 python main.py
 ```
+
+### Iniciar la Aplicación GCONTA
+
+```bash y powershell
+py -3.12 main.py
+```
